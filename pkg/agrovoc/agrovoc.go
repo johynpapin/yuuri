@@ -1,4 +1,4 @@
-// Package agrovoc offers a simple way to search for a concept on agrovoc
+// Package agrovoc offers a simple way to search for a concept on agrovoc.
 package agrovoc
 
 import (
