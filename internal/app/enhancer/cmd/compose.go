@@ -38,7 +38,7 @@ var composeCmd = &cobra.Command{
 			if err != nil {
 				log.WithField("error", err).Fatal("error decoding ntriples:")
 			} else {
-				
+				log.WithField("triple", triple).Info("triple decoded:")
 			}
 		}
 	},
