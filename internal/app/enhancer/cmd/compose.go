@@ -4,6 +4,9 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	log "github.com/sirupsen/logrus"
+	"os"
+	"github.com/knakk/rdf"
+	"io"
 )
 
 func init() {
@@ -25,5 +28,18 @@ var composeCmd = &cobra.Command{
 			"input": viper.GetString("compose.input"),
 			"output": viper.GetString("compose.output"),
 		}).Info("configuration:")
+
+		f, err := os.Open(viper.GetString("compose.input"))
+		if err != nil {
+			log.WithField("error", err).Fatal("error opening the input file:")
+		}
+		dec := rdf.NewTripleDecoder(f, rdf.NTriples)
+		for triple, err := dec.Decode(); err != io.EOF; triple, err = dec.Decode() {
+			if err != nil {
+				log.WithField("error", err).Fatal("error decoding ntriples:")
+			} else {
+				
+			}
+		}
 	},
 }
