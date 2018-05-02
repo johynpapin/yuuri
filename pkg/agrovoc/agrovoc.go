@@ -38,6 +38,7 @@ func search(r SearchRequest) (*SearchResults, error) {
 	if err != nil {
 		return nil, err
 	}
+	
 	return searchResults, nil
 }
 
