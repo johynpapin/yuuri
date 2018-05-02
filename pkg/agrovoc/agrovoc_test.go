@@ -1,13 +1,13 @@
 package agrovoc
 
 import (
-	"testing"
 	"reflect"
+	"testing"
 )
 
 func TestExactMatch(t *testing.T) {
 	tests := []struct {
-		query string
+		query  string
 		result []Result
 	}{
 		{"Oeuf", []Result{{"Oeuf", "http://aims.fao.org/aos/agrovoc/c_2502"}}},

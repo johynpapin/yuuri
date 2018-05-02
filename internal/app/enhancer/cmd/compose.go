@@ -1,12 +1,12 @@
 package cmd
 
 import (
+	"github.com/knakk/rdf"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	log "github.com/sirupsen/logrus"
-	"os"
-	"github.com/knakk/rdf"
 	"io"
+	"os"
 )
 
 func init() {
@@ -25,7 +25,7 @@ var composeCmd = &cobra.Command{
 	Long:  `Applies a compound query to a data set`,
 	Run: func(cmd *cobra.Command, args []string) {
 		log.WithFields(log.Fields{
-			"input": viper.GetString("compose.input"),
+			"input":  viper.GetString("compose.input"),
 			"output": viper.GetString("compose.output"),
 		}).Info("configuration:")
 

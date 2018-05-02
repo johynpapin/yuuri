@@ -2,10 +2,10 @@
 package agrovoc
 
 import (
-	"net/http"
-	"strings"
-	"strconv"
 	"encoding/json"
+	"net/http"
+	"strconv"
+	"strings"
 )
 
 var (
@@ -54,10 +54,10 @@ func ExactMatch(query string) ([]Result, error) {
 		return nil, err
 	}
 
-	results := make([]Result, 0)
+	var results []Result
 
 	for _, result := range searchResults.Results {
-		results = append(results, Result{result.PrefLabel, result.Uri})
+		results = append(results, Result{result.PrefLabel, result.URI})
 	}
 
 	return results, nil
