@@ -1,3 +1,4 @@
+// Package agrovoc offers a simple way to search for a concept on agrovoc
 package agrovoc
 
 import (
@@ -38,10 +39,11 @@ func search(r SearchRequest) (*SearchResults, error) {
 	if err != nil {
 		return nil, err
 	}
-	
+
 	return searchResults, nil
 }
 
+// ExactMatch takes a query as parameter, performs a search on agrovoc and returns a uri/label couple list.
 func ExactMatch(query string) ([]Result, error) {
 	searchResults, err := search(SearchRequest{
 		Query:     query,

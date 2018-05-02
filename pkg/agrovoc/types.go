@@ -1,5 +1,6 @@
 package agrovoc
 
+// SearchRequest represents a request to agrovoc.
 type SearchRequest struct {
 	Query string
 	Lang string
@@ -14,6 +15,7 @@ type SearchRequest struct {
 	Unique bool
 }
 
+// SearchResults SearchResults represents the results of an agrovoc query.
 type SearchResults struct {
 	Uri string `json:"uri"`
 	Results []SearchResult `json:"results"`
@@ -31,6 +33,7 @@ type SearchResult struct {
 	Notation string `json:"notation"`
 }
 
+// Result represents a uri/label couple from agrovoc.
 type Result struct {
 	Label string
 	Uri string
