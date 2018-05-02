@@ -15,12 +15,13 @@ type SearchRequest struct {
 	Unique bool
 }
 
-// SearchResults SearchResults represents the results of an agrovoc query.
+// SearchResults represents the results of an agrovoc query.
 type SearchResults struct {
 	Uri string `json:"uri"`
 	Results []SearchResult `json:"results"`
 }
 
+// SearchResult represents a result of an agrovoc query.
 type SearchResult struct {
 	Uri string `json:"uri"`
 	Type []string `json:"type"`
