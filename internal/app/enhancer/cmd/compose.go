@@ -1,12 +1,13 @@
 package cmd
 
 import (
-	"github.com/knakk/rdf"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"io"
 	"os"
+	"github.com/johynpapin/yuuri/internal/pkg/enhancer"
+	"github.com/knakk/rdf"
+	"io"
 )
 
 func init() {
@@ -14,9 +15,11 @@ func init() {
 
 	composeCmd.Flags().StringP("input", "i", "", "Input file")
 	composeCmd.Flags().StringP("output", "o", "", "Output file")
+	composeCmd.Flags().StringArrayP("query", "q", nil, "The composed query")
 
 	viper.BindPFlag("compose.input", composeCmd.Flags().Lookup("input"))
 	viper.BindPFlag("compose.output", composeCmd.Flags().Lookup("output"))
+	viper.BindPFlag("compose.query", composeCmd.Flags().Lookup("query"))
 }
 
 var composeCmd = &cobra.Command{
@@ -27,19 +30,72 @@ var composeCmd = &cobra.Command{
 		log.WithFields(log.Fields{
 			"input":  viper.GetString("compose.input"),
 			"output": viper.GetString("compose.output"),
+			"query":  viper.GetStringSlice("compose.query"),
 		}).Info("configuration:")
 
-		f, err := os.Open(viper.GetString("compose.input"))
+		inputFile, err := os.Open(viper.GetString("compose.input"))
 		if err != nil {
 			log.WithField("error", err).Fatal("error opening the input file:")
 		}
-		dec := rdf.NewTripleDecoder(f, rdf.NTriples)
+
+		outputFile, err := os.Create(viper.GetString("compose.output"))
+		if err != nil {
+			log.WithField("error", err).Fatal("error opening the output file:")
+		}
+
+		dec := rdf.NewTripleDecoder(inputFile, rdf.NTriples)
+		enc := rdf.NewTripleEncoder(outputFile, rdf.NTriples)
+
+		agrovocEnhancer := enhancer.NewAgrovocEnhancer()
+
 		for triple, err := dec.Decode(); err != io.EOF; triple, err = dec.Decode() {
 			if err != nil {
 				log.WithField("error", err).Fatal("error decoding ntriples:")
 			} else {
-				log.WithField("triple", triple).Info("triple decoded:")
+				triples, err := agrovocEnhancer.Next(triple)
+				if err != nil {
+					log.WithFields(log.Fields{
+						"error":  err,
+						"triple": triple,
+					}).Fatal("error enhancing this triple:")
+				}
+
+				err = encodeTriples(triples, enc)
+				if err != nil {
+					log.WithFields(log.Fields{
+						"error":  err,
+						"triples": triples,
+					}).Fatal("error encoding triples:")
+				}
 			}
 		}
+
+		triples, err := agrovocEnhancer.End()
+		if err != nil {
+			log.WithFields(log.Fields{
+				"error":  err,
+			}).Fatal("error ending the enhancer:")
+		}
+
+		err = encodeTriples(triples, enc)
+		if err != nil {
+			log.WithFields(log.Fields{
+				"error":  err,
+				"triples": triples,
+			}).Fatal("error encoding triples:")
+		}
+
+		log.Info("done.")
 	},
+}
+
+func encodeTriples(triples []rdf.Triple, enc *rdf.TripleEncoder) error {
+	for _, triple := range triples {
+		err := enc.Encode(triple)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

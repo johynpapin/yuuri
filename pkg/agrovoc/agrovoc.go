@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"net/url"
 )
 
 var (
@@ -13,22 +14,22 @@ var (
 )
 
 func search(r SearchRequest) (*SearchResults, error) {
-	var url strings.Builder
-	url.WriteString(endpoint + "search")
+	var surl strings.Builder
+	surl.WriteString(endpoint + "search")
 
-	url.WriteString("?query=" + r.Query)
-	url.WriteString("&lang=" + r.Lang)
-	url.WriteString("&labellang=" + r.Labellang)
-	url.WriteString("&vocab=" + r.Vocab)
-	url.WriteString("&type=" + r.Type)
-	url.WriteString("&parent=" + r.Parent)
-	url.WriteString("&group=" + r.Group)
-	url.WriteString("&maxhits=" + strconv.Itoa(r.Maxhits))
-	url.WriteString("&offset=" + strconv.Itoa(r.Offset))
-	url.WriteString("&fields=" + strings.Join(r.Fields, " "))
-	url.WriteString("&unique=" + strconv.FormatBool(r.Unique))
+	surl.WriteString("?query=" + url.QueryEscape(r.Query))
+	surl.WriteString("&lang=" + r.Lang)
+	surl.WriteString("&labellang=" + r.Labellang)
+	surl.WriteString("&vocab=" + r.Vocab)
+	surl.WriteString("&type=" + r.Type)
+	surl.WriteString("&parent=" + r.Parent)
+	surl.WriteString("&group=" + r.Group)
+	surl.WriteString("&maxhits=" + strconv.Itoa(r.Maxhits))
+	surl.WriteString("&offset=" + strconv.Itoa(r.Offset))
+	surl.WriteString("&fields=" + strings.Join(r.Fields, " "))
+	surl.WriteString("&unique=" + strconv.FormatBool(r.Unique))
 
-	res, err := http.Get(url.String())
+	res, err := http.Get(surl.String())
 	if err != nil {
 		return nil, err
 	}
