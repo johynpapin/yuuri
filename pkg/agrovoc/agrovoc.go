@@ -4,9 +4,9 @@ package agrovoc
 import (
 	"encoding/json"
 	"net/http"
+	"net/url"
 	"strconv"
 	"strings"
-	"net/url"
 )
 
 var (

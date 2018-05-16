@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Worker</title>
+</head>
+<body>
+<h1>worker</h1>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.0/socket.io.js"></script>
+<script>
+    let socket = io();
+    socket.on('work', function(data) {
+        sendMessageToWorker(data);
+    });
+
+    socket.on('init', function(data) {
+        sendMessageToWorker(data);
+    });
+
+    function sendMessageToWorker(message) {
+        console.log(message);
+    }
+
+    function sendMessageToOrchestrator(type, content) {
+        socket.emit(type, JSON.stringify(content));
+    }
+</script>
+</body>
+</html>

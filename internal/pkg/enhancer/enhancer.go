@@ -11,4 +11,10 @@ type Enhancer interface {
 	// End allows to indicate the end of the treatment and returns the last triples that had not yet been processed
 	// (because of a lack of information for example).
 	End() ([]rdf.Triple, error)
+
+	// Set allows you to adjust the enhancer settings.
+	Set(string, interface{}) error
+
+	// Get allows you to read the enhancer settings.
+	Get(string) (interface{}, error)
 }

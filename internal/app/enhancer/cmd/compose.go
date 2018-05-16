@@ -1,13 +1,13 @@
 package cmd
 
 import (
+	"github.com/johynpapin/yuuri/internal/pkg/enhancer"
+	"github.com/knakk/rdf"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"os"
-	"github.com/johynpapin/yuuri/internal/pkg/enhancer"
-	"github.com/knakk/rdf"
 	"io"
+	"os"
 )
 
 func init() {
@@ -37,16 +37,25 @@ var composeCmd = &cobra.Command{
 		if err != nil {
 			log.WithField("error", err).Fatal("error opening the input file:")
 		}
+		defer inputFile.Close()
 
 		outputFile, err := os.Create(viper.GetString("compose.output"))
 		if err != nil {
 			log.WithField("error", err).Fatal("error opening the output file:")
 		}
+		defer outputFile.Close()
 
 		dec := rdf.NewTripleDecoder(inputFile, rdf.NTriples)
 		enc := rdf.NewTripleEncoder(outputFile, rdf.NTriples)
 
 		agrovocEnhancer := enhancer.NewAgrovocEnhancer()
+		agrovocEnhancer.Set("download_output", "agrovoc.nt")
+
+		agrovocOutputFile, err := os.Create("agrovoc.nt")
+		if err != nil {
+			log.WithField("error", err).Fatal("error creating the agrovoc output file:")
+		}
+		agrovocOutputFile.Close()
 
 		for triple, err := dec.Decode(); err != io.EOF; triple, err = dec.Decode() {
 			if err != nil {
@@ -63,7 +72,7 @@ var composeCmd = &cobra.Command{
 				err = encodeTriples(triples, enc)
 				if err != nil {
 					log.WithFields(log.Fields{
-						"error":  err,
+						"error":   err,
 						"triples": triples,
 					}).Fatal("error encoding triples:")
 				}
@@ -73,14 +82,14 @@ var composeCmd = &cobra.Command{
 		triples, err := agrovocEnhancer.End()
 		if err != nil {
 			log.WithFields(log.Fields{
-				"error":  err,
+				"error": err,
 			}).Fatal("error ending the enhancer:")
 		}
 
 		err = encodeTriples(triples, enc)
 		if err != nil {
 			log.WithFields(log.Fields{
-				"error":  err,
+				"error":   err,
 				"triples": triples,
 			}).Fatal("error encoding triples:")
 		}

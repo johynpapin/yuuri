@@ -32,6 +32,10 @@ func (resource Resource) Equal(term Term) bool {
 	return true
 }
 
+func (resource Resource) allowedAsASubject()   {}
+func (resource Resource) allowedAsAPredicate() {}
+func (resource Resource) allowedAsAnObject()   {}
+
 // NewResource returns a new Resource
 func NewResource(uri string) *Resource {
 	return &Resource{uri}
@@ -72,6 +76,8 @@ func (literal Literal) Equal(term Term) bool {
 	return true
 }
 
+func (literal Literal) allowedAsAnObject() {}
+
 // NewLiteral returns a new Literal
 func NewLiteral(lexicalform string) *Literal {
 	return &Literal{LexicalForm: lexicalform}
@@ -111,19 +117,40 @@ func (blankNode BlankNode) Equal(term Term) bool {
 	return true
 }
 
+func (blankNode BlankNode) allowedAsASubject() {}
+func (blankNode BlankNode) allowedAsAnObject() {}
+
 // NewBlankNode returns a new BlankNode
 func NewBlankNode(id string) *BlankNode {
 	return &BlankNode{id}
 }
 
+// Subject represents a RDF subject
+type Subject interface {
+	Term
+	allowedAsASubject()
+}
+
+// Predicate represents a RDF predicate
+type Predicate interface {
+	Term
+	allowedAsAPredicate()
+}
+
+// Object represents a RDF object
+type Object interface {
+	Term
+	allowedAsAnObject()
+}
+
 // Triple represents a RDF triple
 type Triple struct {
-	Subject   Term
-	Predicate Term
-	Object    Term
+	Subject   Subject
+	Predicate Predicate
+	Object    Object
 }
 
 // NewTriple returns a new Triple
-func NewTriple(subject Term, predicate Term, object Term) *Triple {
+func NewTriple(subject Subject, predicate Predicate, object Object) *Triple {
 	return &Triple{subject, predicate, object}
 }
