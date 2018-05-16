@@ -261,7 +261,7 @@ func (ms *MonoprixScraper) next(so socketio.Socket) error {
 
 // end is called by next and indicates the end of the scrapping.
 func (ms *MonoprixScraper) end(so socketio.Socket) error {
-	err = ms.srv.Shutdown(nil)
+	err := ms.srv.Shutdown(nil)
 	if err != nil {
 		return err
 	}
