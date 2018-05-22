@@ -1,0 +1,124 @@
+\documentclass[10pt]{beamer}
+
+\usetheme{metropolis}
+\usepackage{appendixnumberbeamer}
+
+\usepackage{booktabs}
+\usepackage[scale=2]{ccicons}
+
+\usepackage{pgfplots}
+\usepgfplotslibrary{dateplot}
+
+\usepackage{xspace}
+\newcommand{\themename}{\textbf{\textsc{metropolis}}\xspace}
+
+\title{Internship's progress}
+\subtitle{First presentation}
+\date{\today}
+\author{Johyn Papin}
+\institute{National Institute of Informatics}
+% \titlegraphic{\hfill\includegraphics[height=1.5cm]{logo.pdf}}
+
+\begin{document}
+
+\maketitle
+
+\begin{frame}{Table of contents}
+  \setbeamertemplate{section in toc}[sections numbered]
+  \tableofcontents[hideallsubsections]
+\end{frame}
+
+\section{Introduction}
+
+\begin{frame}[fragile]{The project}
+    The project concerns a Linked Data database containing recipes and ingredients.
+    
+    The project can be divided as follows:
+    \begin{itemize}
+        \item Extract prices and nutritional information from several sources
+        \item Enrich the database with these data
+        \item Use these data to calculate new information
+    \end{itemize}
+\end{frame}
+
+\section{Progress}
+
+\begin{frame}{What I've done}
+    Here is what has been completed:
+	\begin{itemize}
+		\item Understand the linked data and its different formats
+		\item Learn how to write SparQL queries
+		\item Enrich the database with AGROVOC vocabulary
+		\begin{itemize}
+		    \item Read an n-triples file in GO
+		    \item Represent an RDF graph in GO
+		    \item Querying the AGROVOC API
+		    \item Process n-triples as a stream
+		\end{itemize}
+		\item Extract prices and nutritional information from monoprix
+		\begin{itemize}
+		    \item Bypass the security of "monoprix".
+		    \begin{itemize}
+		        \item Use of TOR and request for a new circuit each time it is blocked
+		        \item Use of a headless browser (firefox)
+		    \end{itemize}
+		    \item Scraping the menu, the categories and finally the products
+		    \item Output the products as a stream
+		    \item Scraping multiple pages at the same time (concurrently)
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{What I'm doing}
+    Here is what I'm doing now:
+    \begin{itemize}
+        \item Dockerize the program
+        \item Use an indexing system to search monoprix data
+        \item Use sparql to process the triples of the database in a stream fashion
+        \item Use sparql to add triples to the database
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Problem encountered}
+    \begin{itemize}
+        \item The security of monoprix. Solutions tested:
+        \begin{itemize}
+            \item simple GET queries
+            \item as before but with cookies and random user-agents
+            \item as before but with TOR proxy
+            \item using a headless browser
+            \item as before but with TOR proxy
+            \item \textbf{as before but asking a new TOR circuit after each problem (and a new firefox profile)}
+        \end{itemize}
+        \item Race conditions and other concurrent issues. Solutions:
+        \begin{itemize}
+            \item Mutex (locks)
+            \item Work queue
+            \item State machine
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\section{Conclusion}
+
+\begin{frame}{Summary}
+
+  Get the source of this presentation on
+
+  \begin{center}\url{github.com/johynpapin/yuuri}\end{center}
+
+  The presentation \emph{itself} is licensed under a
+  \href{http://creativecommons.org/licenses/by-sa/4.0/}{Creative Commons
+  Attribution-ShareAlike 4.0 International License}.
+
+  \begin{center}\ccbysa\end{center}
+
+\end{frame}
+
+\begin{frame}[standout]
+  Questions?
+\end{frame}
+
+\appendix
+
+\end{document}
