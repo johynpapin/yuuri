@@ -45,8 +45,25 @@
 	\begin{itemize}
 		\item Everything is on docker
 	    \item ElasticSearch is used to index the monoprix data
+	    \begin{itemize}
+	        \item indexing with two analyzers: standard and french
+	        \item run in docker: performing an index reset is easy
+	    \end{itemize}
 	    \item Sparql is used to query the triples
-	    \item These triples are enhanced by querying ElasticSearch
+	    \begin{itemize}
+	        \item backend-independent
+	    \end{itemize}
+	    \item These triples are enhanced by querying ElasticSearch (match query)
+	    \begin{itemize}
+	        \item Using an Enhancer interface with the following methods:
+	        \begin{itemize}
+	            \item \texttt{Next(triple) -> triples}
+	            \item \texttt{End() -> triples}
+	            \item \texttt{Set(key, value)} and \texttt{Get(key) -> value} for the settings
+	        \end{itemize}
+	        \item Very easy to add another enhancer (modular)
+	        \item Can be filled by a stream of triples
+	    \end{itemize}
 	\end{itemize}
 \end{frame}
 
